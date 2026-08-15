@@ -32,7 +32,6 @@ export const CinematicCanvas: React.FC<CinematicCanvasProps> = ({
 }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const imagesRef = useRef<HTMLImageElement[]>([]);
-  const [loadedCount, setLoadedCount] = useState(0);
   const [isHoveringEye, setIsHoveringEye] = useState(false);
   const [hoverEyeCoords, setHoverEyeCoords] = useState<{ x: number; y: number } | null>(null);
   
@@ -42,34 +41,16 @@ export const CinematicCanvas: React.FC<CinematicCanvasProps> = ({
   const frameProgressRef = useRef<number>(1);
   const hasTriggeredCompleteRef = useRef<boolean>(false);
 
-  // Preload all 73 frames
   useEffect(() => {
-    let mounted = true;
     const images: HTMLImageElement[] = [];
-    let loaded = 0;
 
     for (let i = 1; i <= TOTAL_FRAMES; i++) {
       const frameNum = String(i).padStart(3, '0');
       const img = new Image();
       img.src = `/frames/ezgif-frame-${frameNum}.jpg`;
-
-      img.onload = () => {
-        if (!mounted) return;
-        loaded++;
-        setLoadedCount(loaded);
-      };
-      img.onerror = () => {
-        if (!mounted) return;
-        loaded++;
-        setLoadedCount(loaded);
-      };
       images.push(img);
     }
     imagesRef.current = images;
-
-    return () => {
-      mounted = false;
-    };
   }, []);
 
   // Initialize ambient particle system (rain & crimson embers)

@@ -9,8 +9,7 @@ type ExperienceState =
   | 'animating' // Sharingan evolution sequence playing (frames 1-73)
   | 'mangekyo' // Sequence finished at frame 73, auto-triggering file picker
   | 'analyzing' // Processing uploaded images with Gemini Vision
-  | 'post_visible' // Centered glassmorphic LinkedIn post with 15s timer
-  | 'complete'; // Post dismissed, ready to awaken again
+  | 'post_visible'; // Centered glassmorphic LinkedIn post with 15s timer
 
 export const App: React.FC = () => {
   const [state, setState] = useState<ExperienceState>('idle');
@@ -20,8 +19,8 @@ export const App: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   // Step 2: User clicks Itachi's eye
-  const handleEyeClick = useCallback(() => {
-    if (state === 'idle' || state === 'complete') {
+ const handleEyeClick = useCallback(() => {
+    if (state === 'idle') {
       setErrorMessage(null);
       setState('animating');
     }
@@ -82,7 +81,7 @@ const handleClosePost = useCallback(() => {
         isPlaying={state === 'animating'}
         onAnimationComplete={handleAnimationComplete}
         onEyeClick={handleEyeClick}
-        isEyeClickable={state === 'idle' || state === 'complete'}
+       isEyeClickable={state === 'idle'}
       />
 
       {/* Cinematic Vignette Overlay */}

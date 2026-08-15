@@ -1,4 +1,5 @@
 import React, { useRef, useEffect } from 'react';
+import { AlertCircle } from 'lucide-react';
 
 interface FileUploadTriggerProps {
   onFilesSelected: (files: File[]) => void;

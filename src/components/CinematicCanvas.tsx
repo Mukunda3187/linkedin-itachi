@@ -76,8 +76,6 @@ export const CinematicCanvas: React.FC<CinematicCanvasProps> = ({
     const ctx = canvas.getContext('2d', { alpha: false });
     if (!ctx) return;
 
-    let animId: number;
-
     const render = (time: number) => {
       if (!lastTimeRef.current) lastTimeRef.current = time;
       const delta = time - lastTimeRef.current;
@@ -189,7 +187,6 @@ export const CinematicCanvas: React.FC<CinematicCanvasProps> = ({
 
     return () => {
     };
-  }, [isPlaying, onAnimationComplete, onFrameUpdate]);
 
   // Helper to map screen coordinates to image coordinates
   const getCoverMetrics = useCallback(() => {

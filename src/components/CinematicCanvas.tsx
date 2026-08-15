@@ -5,7 +5,6 @@ interface CinematicCanvasProps {
   isPlaying: boolean;
   onAnimationComplete: () => void;
   onEyeClick: () => void;
-  isEyeClickable: boolean;
   currentFrameIndex: number;
   onFrameUpdate: (frame: number) => void;
 }

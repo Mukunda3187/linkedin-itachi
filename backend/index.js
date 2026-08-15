@@ -66,7 +66,9 @@ app.post('/api/generate-post', async (req, res) => {
     if (!geminiResponse.ok) {
       const errText = await geminiResponse.text().catch(() => '');
       console.error('Gemini API error:', geminiResponse.status, errText);
-      return res.status(502).json({ error: 'AI provider request failed.' });
+      return res.status(502).json({
+        error: `AI provider request failed (${geminiResponse.status}): ${errText.slice(0, 300)}`,
+      });
     }
 
     const data = await geminiResponse.json();

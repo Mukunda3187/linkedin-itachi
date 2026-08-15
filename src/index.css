@@ -105,17 +105,6 @@ html, body, #root {
   mix-blend-mode: screen;
 }
 
-/* Subtle Eye Hover Glow */
-.eye-hotspot {
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.eye-hotspot:hover .eye-glow-ring {
-  opacity: 1;
-  transform: translate(-50%, -50%) scale(1.08);
-}
-
 .eye-glow-ring {
   opacity: 0;
   position: absolute;
@@ -143,24 +132,6 @@ html, body, #root {
   animation: subtle-breathe 4s ease-in-out infinite;
 }
 
-@keyframes pulse-ring {
-  0% {
-    transform: scale(0.95);
-    opacity: 0.6;
-  }
-  50% {
-    transform: scale(1.1);
-    opacity: 1;
-  }
-  100% {
-    transform: scale(0.95);
-    opacity: 0.6;
-  }
-}
-
-.animate-pulse-ring {
-  animation: pulse-ring 2.5s infinite ease-in-out;
-}
 
 /* Animations for card entry and exit */
 .card-enter {
@@ -193,19 +164,6 @@ html, body, #root {
   }
 }
 
-/* Progress bar for 15s */
-@keyframes timerCountdown {
-  from {
-    width: 100%;
-  }
-  to {
-    width: 0%;
-  }
-}
-
-.timer-bar {
-  animation: timerCountdown 15s linear forwards;
-}
 
 .itachi-post-overlay {
   position: fixed;

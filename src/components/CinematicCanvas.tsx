@@ -29,7 +29,6 @@ export const CinematicCanvas: React.FC<CinematicCanvasProps> = ({
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const imagesRef = useRef<HTMLImageElement[]>([]);
   const [isHoveringEye, setIsHoveringEye] = useState(false);
-  const [hoverEyeCoords, setHoverEyeCoords] = useState<{ x: number; y: number } | null>(null);
   
   const particlesRef = useRef<Particle[]>([]);
   const lastTimeRef = useRef<number>(0);
@@ -244,12 +243,7 @@ export const CinematicCanvas: React.FC<CinematicCanvasProps> = ({
     }
 
     const inEye = isPointInEyeRegion(e.clientX, e.clientY);
-    if (inEye) {
-      setIsHoveringEye(true);
-      setHoverEyeCoords({ x: e.clientX, y: e.clientY });
-    } else {
-      setIsHoveringEye(false);
-    }
+    setIsHoveringEye(inEye);
   };
 
   const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -271,21 +265,6 @@ export const CinematicCanvas: React.FC<CinematicCanvasProps> = ({
       }}
     >
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full block" />
-
-      {/* Subtle eye hover glow indicator */}
-      {isHoveringEye && hoverEyeCoords && isEyeClickable && !isPlaying && (
-        <div
-          className="eye-glow-ring pointer-events-none"
-          style={{
-            left: `${hoverEyeCoords.x}px`,
-            top: `${hoverEyeCoords.y}px`,
-            width: '140px',
-            height: '140px',
-            opacity: 1,
-            transform: 'translate(-50%, -50%) scale(1.15)',
-          }}
-        />
-      )}
     </div>
   );
 };

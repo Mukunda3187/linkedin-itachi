@@ -193,17 +193,3 @@ html, body, #root {
 .sharingan-spin {
   animation: sharinganSpin 3s linear infinite;
 }
-
-/* Force landscape view on phones held in portrait */
-@media screen and (max-width: 900px) and (orientation: portrait) {
-  html {
-    transform: rotate(90deg);
-    transform-origin: left top;
-    width: 100vh;
-    height: 100vw;
-    overflow-x: hidden;
-    position: absolute;
-    top: 0;
-    left: 100%;
-  }
-}

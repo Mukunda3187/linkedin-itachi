@@ -328,26 +328,6 @@ export const CinematicCanvas: React.FC<CinematicCanvasProps> = ({
           }}
         />
       )}
-
-      {/* Frame Loading Progress (only visible if loading takes longer than 200ms) */}
-      {loadingPercentage < 100 && (
-        <div className="absolute bottom-6 right-6 px-4 py-2 rounded-full glass-panel border border-red-500/20 text-xs text-red-300 flex items-center space-x-2 animate-pulse">
-          <div className="w-2 h-2 rounded-full bg-red-500 animate-ping" />
-          <span className="font-mono tracking-widest">PRELOADING CHAKRA {loadingPercentage}%</span>
-        </div>
-      )}
-
-      {/* Subtle interactive hint when eye is ready */}
-      {isEyeClickable && !isPlaying && currentFrameIndex === 1 && loadedCount > 20 && (
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 pointer-events-none transition-opacity duration-1000">
-          <div className="flex flex-col items-center space-y-1.5 opacity-60 hover:opacity-100 transition-opacity">
-            <div className="w-1 h-6 rounded-full bg-gradient-to-b from-transparent via-red-500 to-transparent animate-pulse" />
-            <span className="text-[11px] font-sans uppercase tracking-[0.35em] text-neutral-400 font-light">
-              Look into his eyes
-            </span>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

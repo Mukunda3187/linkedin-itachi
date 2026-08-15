@@ -45,17 +45,33 @@ export const LinkedInPostCard: React.FC<LinkedInPostCardProps> = ({
         }}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-black/40 backdrop-blur-md">
-          <div className="flex items-center space-x-2.5">
-            <div className="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse" />
-            <span className="tracking-widest text-xs uppercase text-neutral-300">
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            padding: '18px 24px',
+            borderBottom: '1px solid rgba(255,255,255,0.1)',
+            background: 'rgba(0,0,0,0.4)',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <div className="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse" style={{ flexShrink: 0 }} />
+            <span style={{ letterSpacing: '0.15em', fontSize: '12px', textTransform: 'uppercase', color: '#d4d4d4' }}>
               LinkedIn Description
             </span>
           </div>
 
           <button
             onClick={onClose}
-            className="p-1.5 rounded-full text-neutral-400 hover:text-white hover:bg-white/10 transition-all duration-200"
+            className="hover:text-white hover:bg-white/10"
+            style={{
+              padding: '6px',
+              borderRadius: '999px',
+              color: '#a3a3a3',
+              transition: 'all 0.2s ease',
+              flexShrink: 0,
+            }}
             title="Close and restart"
           >
             <X className="w-4 h-4" />
@@ -63,22 +79,54 @@ export const LinkedInPostCard: React.FC<LinkedInPostCardProps> = ({
         </div>
 
         {/* Body: post text + copy button side by side */}
-        <div className="flex-1 flex items-end gap-4 px-6 py-5">
-          <div className="flex-1 overflow-y-auto custom-scrollbar text-sm md:text-base leading-relaxed text-neutral-100 whitespace-pre-wrap selection:bg-red-900 selection:text-white">
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'flex-end',
+            gap: '18px',
+            padding: '22px 24px 26px',
+          }}
+        >
+          <div
+            className="custom-scrollbar selection:bg-red-900 selection:text-white"
+            style={{
+              flex: 1,
+              overflowY: 'auto',
+              fontSize: '15px',
+              lineHeight: 1.7,
+              color: '#f0f0f0',
+              whiteSpace: 'pre-wrap',
+            }}
+          >
             {postText}
           </div>
 
           <button
             onClick={handleCopy}
-            className={`shrink-0 flex flex-col items-center justify-center gap-1 w-16 h-16 rounded-xl border-2 transition-all duration-300 ${
-              copied
-                ? 'border-emerald-500 text-emerald-400 bg-emerald-500/10 scale-[1.05]'
-                : 'border-red-600/70 text-red-500 hover:border-red-500 hover:bg-red-600/10 active:scale-95'
-            }`}
+            style={{
+              flexShrink: 0,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '2px',
+              width: '64px',
+              height: '64px',
+              borderRadius: '12px',
+              border: copied ? '2px solid #10b981' : '2px solid rgba(220,38,38,0.7)',
+              background: copied ? 'rgba(16,185,129,0.1)' : 'transparent',
+              transition: 'all 0.25s ease',
+            }}
             title={copied ? 'Copied' : 'Copy'}
           >
-            {copied ? <Check className="w-5 h-5" /> : <Copy className="w-5 h-5" />}
-            <span className="text-[9px] tracking-wider">{copied ? 'COPIED' : 'COPY'}</span>
+            {copied ? (
+              <Check className="w-5 h-5" style={{ color: '#34d399' }} />
+            ) : (
+              <Copy className="w-5 h-5" style={{ color: '#ef4444' }} />
+            )}
+            <span style={{ fontSize: '9px', letterSpacing: '0.1em', color: '#ffffff' }}>
+              {copied ? 'COPIED' : 'COPY'}
+            </span>
           </button>
         </div>
       </div>

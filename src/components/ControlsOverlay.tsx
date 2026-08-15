@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Volume2, VolumeX, Key, RotateCcw } from 'lucide-react';
+import { Volume2, VolumeX, RotateCcw } from 'lucide-react';
 import { audioEngine } from '../services/audioEngine';
 
 interface ControlsOverlayProps {

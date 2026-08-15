@@ -180,7 +180,7 @@ export const CinematicCanvas: React.FC<CinematicCanvasProps> = ({
         }
       }
 
-      animationId = requestAnimationFrame(render);
+      requestAnimationFrame(render);
     };
 
     const animationId = requestAnimationFrame(render);

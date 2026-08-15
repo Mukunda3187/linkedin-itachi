@@ -74,8 +74,8 @@ export const FileUploadTrigger: React.FC<FileUploadTriggerProps> = ({
               <UploadCloud className="w-4 h-4 text-red-400 animate-pulse" />
               <span>
                 {isAnalyzing
-                  ? `Analyzing ${uploadedFiles.length} Project Image${uploadedFiles.length > 1 ? 's' : ''}...`
-                  : `${uploadedFiles.length} Image${uploadedFiles.length > 1 ? 's' : ''} Loaded`}
+                  ? `Analyzing ${uploadedFiles.length} Project files${uploadedFiles.length > 1 ? 's' : ''}...`
+                  : `${uploadedFiles.length} files${uploadedFiles.length > 1 ? 's' : ''} Loaded`}
               </span>
             </div>
           </div>

@@ -87,6 +87,13 @@ app.post('/api/generate-post', async (req, res) => {
 
 // Serve the built frontend (the dist folder created by "npm run build")
 const distPath = path.join(__dirname, '..', 'dist');
+app.use(
+  '/frames',
+  express.static(path.join(distPath, 'frames'), {
+    maxAge: '7d',
+    immutable: true,
+  })
+);
 app.use(express.static(distPath));
 
 // Any route that isn't /api/... should return the frontend's index.html

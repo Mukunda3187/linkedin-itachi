@@ -32,9 +32,21 @@ app.post('/api/generate-post', async (req, res) => {
     }));
 
     const prompt =
-      'You are a professional LinkedIn ghostwriter. Look at the attached image(s) and write an engaging, ' +
-      'professional LinkedIn post inspired by what you see. Keep it concise, authentic, and include 3-5 relevant hashtags. ' +
-      'Return only the post text, nothing else.';
+      'You are a professional LinkedIn ghostwriter. Carefully look at the attached image(s) — they may show an app, ' +
+      'dashboard, code, a certificate, an event, or a project result. Identify only what you can actually see: the ' +
+      'type of project or achievement, visible features, technologies, and any visible context (event name, organizer, ' +
+      'result). Do not invent details that are not visibly supported by the image.\n\n' +
+      'Then write an effective, engaging LinkedIn post in a natural, first-person voice (like a real person sharing ' +
+      'their own work or milestone, not corporate marketing copy). The post should:\n' +
+      '- Open with a strong, attention-grabbing hook line\n' +
+      '- Briefly explain what this is / what was achieved, in your own authentic voice\n' +
+      '- Highlight 2-4 key details, features, or technologies actually visible in the image\n' +
+      '- Include a short closing thought (what you learned, or what is next)\n' +
+      '- Use relevant emojis naturally throughout (not excessive — roughly 4-8 total across the post) to add energy ' +
+      'and visual breaks between sections\n' +
+      '- End with 3-6 relevant, specific hashtags on their own line\n\n' +
+      'Keep the whole post concise enough for LinkedIn (roughly 100-200 words). Return ONLY the finished post text — ' +
+      'no preamble, no explanation, no markdown formatting, no quotation marks around it.';
 
     const geminiResponse = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`,

@@ -1,47 +1,16 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Copy, Check, Sparkles, Clock } from 'lucide-react';
+import React, { useState } from 'react';
+import { Copy, Check, Sparkles, X } from 'lucide-react';
 
 interface LinkedInPostCardProps {
   postText: string;
-  onAutoDismiss: () => void;
-  durationSeconds?: number;
+  onClose: () => void;
 }
 
 export const LinkedInPostCard: React.FC<LinkedInPostCardProps> = ({
   postText,
-  onAutoDismiss,
-  durationSeconds = 15,
+  onClose,
 }) => {
   const [copied, setCopied] = useState(false);
-  const [isExiting, setIsExiting] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(durationSeconds);
-  const startTimeRef = useRef<number>(Date.now());
-
-  // 15-second automatic countdown
-  useEffect(() => {
-    startTimeRef.current = Date.now();
-    setTimeLeft(durationSeconds);
-    setIsExiting(false);
-
-    const interval = window.setInterval(() => {
-      const elapsed = (Date.now() - startTimeRef.current) / 1000;
-      const remaining = Math.max(0, durationSeconds - elapsed);
-      setTimeLeft(Math.ceil(remaining));
-
-      if (remaining <= 0.6 && !isExiting) {
-        setIsExiting(true);
-      }
-
-      if (remaining <= 0) {
-        window.clearInterval(interval);
-        onAutoDismiss();
-      }
-    }, 100);
-
-    return () => {
-      window.clearInterval(interval);
-    };
-  }, [durationSeconds, onAutoDismiss]);
 
   const handleCopy = async () => {
     try {
@@ -51,7 +20,6 @@ export const LinkedInPostCard: React.FC<LinkedInPostCardProps> = ({
         setCopied(false);
       }, 3000);
     } catch {
-      // Fallback
       const textArea = document.createElement('textarea');
       textArea.value = postText;
       document.body.appendChild(textArea);
@@ -67,26 +35,12 @@ export const LinkedInPostCard: React.FC<LinkedInPostCardProps> = ({
 
   return (
     <div className="itachi-post-overlay pointer-events-auto select-text">
-      {/* Centered Glassmorphic Modal Card */}
       <div
-        className={`itachi-post-card glass-card-crimson text-neutral-100 transition-all duration-500 shadow-2xl ${
-          isExiting ? 'card-exit' : 'card-enter'
-        }`}
+        className="itachi-post-card glass-card-crimson text-neutral-100 transition-all duration-500 shadow-2xl card-enter"
         style={{
           boxShadow: '0 25px 60px -15px rgba(0, 0, 0, 0.95), 0 0 40px rgba(220, 38, 38, 0.15)',
         }}
       >
-        {/* Top Progress countdown bar */}
-        <div className="w-full h-1 bg-neutral-900/60 overflow-hidden">
-          <div
-            className="h-full bg-gradient-to-r from-red-700 via-red-500 to-red-400"
-            style={{
-              width: `${(timeLeft / durationSeconds) * 100}%`,
-              transition: 'width 0.1s linear',
-            }}
-          />
-        </div>
-
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-black/40 backdrop-blur-md">
           <div className="flex items-center space-x-2.5">
@@ -96,10 +50,13 @@ export const LinkedInPostCard: React.FC<LinkedInPostCardProps> = ({
             </span>
           </div>
 
-          <div className="flex items-center space-x-2 text-xs text-neutral-400 font-mono">
-            <Clock className="w-3.5 h-3.5 text-red-400" />
-            <span>{timeLeft}s auto-dismiss</span>
-          </div>
+          <button
+            onClick={onClose}
+            className="p-1.5 rounded-full text-neutral-400 hover:text-white hover:bg-white/10 transition-all duration-200"
+            title="Close and restart"
+          >
+            <X className="w-4 h-4" />
+          </button>
         </div>
 
         {/* Scrollable Post Content */}
@@ -114,7 +71,6 @@ export const LinkedInPostCard: React.FC<LinkedInPostCardProps> = ({
             <span>Ready for 1-click LinkedIn publishing</span>
           </div>
 
-          {/* Copy Button */}
           <button
             onClick={handleCopy}
             className={`w-full sm:w-auto px-6 py-2.5 rounded-xl font-medium text-xs md:text-sm tracking-wider uppercase transition-all duration-300 flex items-center justify-center space-x-2 shadow-lg ${

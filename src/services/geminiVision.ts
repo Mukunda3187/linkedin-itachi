@@ -171,7 +171,7 @@ async function analyzeLocally(files: File[]): Promise<ImageAnalysisResult> {
   return {
     postText,
     identifiedTech: detectedTech,
-    summary: `Analyzed ${files.length} project screenshot${files.length > 1 ? 's' : ''}`,
+    summary: `Offline template used — add a Gemini API key for real image analysis`,
   };
 }
 

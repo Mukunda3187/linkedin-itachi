@@ -44,7 +44,7 @@ export const LinkedInPostCard: React.FC<LinkedInPostCardProps> = ({
           boxShadow: '0 25px 60px -15px rgba(0, 0, 0, 0.95), 0 0 40px rgba(220, 38, 38, 0.15)',
         }}
       >
-        {/* Header */}
+        {/* Header (fixed) */}
         <div
           style={{
             display: 'flex',
@@ -53,6 +53,7 @@ export const LinkedInPostCard: React.FC<LinkedInPostCardProps> = ({
             padding: '18px 24px',
             borderBottom: '1px solid rgba(255,255,255,0.1)',
             background: 'rgba(0,0,0,0.4)',
+            flexShrink: 0,
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -83,29 +84,34 @@ export const LinkedInPostCard: React.FC<LinkedInPostCardProps> = ({
           </button>
         </div>
 
-        {/* Body: post text + copy button side by side */}
+        {/* Scrollable post text — takes remaining space, scrolls internally */}
         <div
+          className="custom-scrollbar selection:bg-red-900 selection:text-white"
           style={{
-            display: 'flex',
-            alignItems: 'flex-end',
-            gap: '18px',
-            padding: '22px 24px 26px',
+            flex: 1,
+            minHeight: 0,
+            overflowY: 'auto',
+            padding: '22px 24px',
+            fontSize: '15px',
+            lineHeight: 1.7,
+            color: '#f0f0f0',
+            whiteSpace: 'pre-wrap',
           }}
         >
-          <div
-            className="custom-scrollbar selection:bg-red-900 selection:text-white"
-            style={{
-              flex: 1,
-              overflowY: 'auto',
-              fontSize: '15px',
-              lineHeight: 1.7,
-              color: '#f0f0f0',
-              whiteSpace: 'pre-wrap',
-            }}
-          >
-            {postText}
-          </div>
+          {postText}
+        </div>
 
+        {/* Footer (fixed) — copy button always visible here regardless of text length */}
+        <div
+          style={{
+            flexShrink: 0,
+            display: 'flex',
+            justifyContent: 'flex-end',
+            padding: '16px 24px',
+            borderTop: '1px solid rgba(255,255,255,0.1)',
+            background: 'rgba(0,0,0,0.4)',
+          }}
+        >
           <button
             onClick={handleCopy}
             style={{

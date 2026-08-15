@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
-import { audioEngine } from '../services/audioEngine';
 
 interface CinematicCanvasProps {
   isPlaying: boolean;
@@ -280,9 +279,6 @@ export const CinematicCanvas: React.FC<CinematicCanvasProps> = ({
 
     const inEye = isPointInEyeRegion(e.clientX, e.clientY);
     if (inEye) {
-      if (!isHoveringEye) {
-        audioEngine.playEyeHover();
-      }
       setIsHoveringEye(true);
       setHoverEyeCoords({ x: e.clientX, y: e.clientY });
     } else {
@@ -295,7 +291,6 @@ export const CinematicCanvas: React.FC<CinematicCanvasProps> = ({
 
     const inEye = isPointInEyeRegion(e.clientX, e.clientY);
     if (inEye) {
-      audioEngine.playSharinganActivation();
       onEyeClick();
     }
   };

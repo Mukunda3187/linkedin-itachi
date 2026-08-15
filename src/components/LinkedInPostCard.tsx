@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Copy, Check, Sparkles, X } from 'lucide-react';
+import { Copy, Check, X } from 'lucide-react';
 
 interface LinkedInPostCardProps {
   postText: string;
@@ -65,23 +65,20 @@ export const LinkedInPostCard: React.FC<LinkedInPostCardProps> = ({
         </div>
 
         {/* Footer Actions */}
-        <div className="px-6 py-4 border-t border-white/10 bg-black/50 backdrop-blur-md flex flex-col sm:flex-row items-center justify-between gap-3">
-          
+        <div className="px-6 py-4 border-t border-white/10 bg-black/50 backdrop-blur-md flex items-center justify-end">
           <button
             onClick={handleCopy}
-            className={`w-full sm:w-auto px-6 py-2.5 rounded-xl font-medium text-xs md:text-sm tracking-wider uppercase transition-all duration-300 flex items-center justify-center space-x-2 shadow-lg ${
+            className={`p-3 rounded-xl transition-all duration-300 shadow-lg ${
               copied
-                ? 'bg-emerald-600/90 text-white shadow-emerald-900/50 scale-[1.02]'
+                ? 'bg-emerald-600/90 text-white shadow-emerald-900/50 scale-[1.05]'
                 : 'bg-gradient-to-r from-red-700 to-red-600 hover:from-red-600 hover:to-red-500 text-white shadow-red-950/80 hover:shadow-red-800/40 active:scale-95'
             }`}
+            title={copied ? 'Copied' : 'Copy'}
           >
             {copied ? (
-              <>
-              </>
+              <Check className="w-5 h-5 text-white animate-scale-check" />
             ) : (
-              <>
-                <Copy className="w-4 h-4 text-red-200" />
-              </>
+              <Copy className="w-5 h-5 text-red-200" />
             )}
           </button>
         </div>

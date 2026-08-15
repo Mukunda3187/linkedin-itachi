@@ -73,10 +73,10 @@ export const FileUploadTrigger: React.FC<FileUploadTriggerProps> = ({
                 className="sharingan-spin"
                 style={{ width: '16px', height: '16px' }}
               />
-              <span>
+             <span>
                 {isAnalyzing
-                  ? `Analyzing ${uploadedFiles.length} Project files${uploadedFiles.length > 1 ? 's' : ''}...`
-                  : `${uploadedFiles.length} files${uploadedFiles.length > 1 ? 's' : ''} Loaded`}
+                  ? `Analyzing ${uploadedFiles.length} file${uploadedFiles.length > 1 ? 's' : ''}...`
+                  : `${uploadedFiles.length} file${uploadedFiles.length > 1 ? 's' : ''} loaded`}
               </span>
             </div>
           </div>

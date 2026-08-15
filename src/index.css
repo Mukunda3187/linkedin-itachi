@@ -185,3 +185,11 @@ html, body, #root {
   border-radius: 16px;
   overflow: hidden;
 }
+@keyframes sharinganSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.sharingan-spin {
+  animation: sharinganSpin 3s linear infinite;
+}

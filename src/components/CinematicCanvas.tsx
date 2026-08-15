@@ -5,8 +5,6 @@ interface CinematicCanvasProps {
   onAnimationComplete: () => void;
   onEyeClick: () => void;
   isEyeClickable: boolean;
-  currentFrameIndex: number;
-  onFrameUpdate: (frame: number) => void;
 }
 
 const TOTAL_FRAMES = 73;
@@ -27,15 +25,12 @@ export const CinematicCanvas: React.FC<CinematicCanvasProps> = ({
   onAnimationComplete,
   onEyeClick,
   isEyeClickable,
-  currentFrameIndex,
-  onFrameUpdate,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const imagesRef = useRef<HTMLImageElement[]>([]);
   const [isHoveringEye, setIsHoveringEye] = useState(false);
   const [hoverEyeCoords, setHoverEyeCoords] = useState<{ x: number; y: number } | null>(null);
   
-  const animationFrameIdRef = useRef<number | null>(null);
   const particlesRef = useRef<Particle[]>([]);
   const lastTimeRef = useRef<number>(0);
   const frameProgressRef = useRef<number>(1);
@@ -74,14 +69,6 @@ export const CinematicCanvas: React.FC<CinematicCanvasProps> = ({
     particlesRef.current = particles;
   }, []);
 
-  // Reset frame when requested from parent
-  useEffect(() => {
-    frameProgressRef.current = currentFrameIndex;
-    if (currentFrameIndex === 1) {
-      hasTriggeredCompleteRef.current = false;
-    }
-  }, [currentFrameIndex]);
-
   // Main Render Loop (Canvas drawing + particles + sequence animation)
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -102,7 +89,6 @@ export const CinematicCanvas: React.FC<CinematicCanvasProps> = ({
         const frameIncrement = (delta / 1000) * 30.5;
         frameProgressRef.current = Math.min(TOTAL_FRAMES, frameProgressRef.current + frameIncrement);
         const currentIdx = Math.floor(frameProgressRef.current);
-        onFrameUpdate(currentIdx);
 
         if (currentIdx >= TOTAL_FRAMES && !hasTriggeredCompleteRef.current) {
           hasTriggeredCompleteRef.current = true;
@@ -200,10 +186,8 @@ export const CinematicCanvas: React.FC<CinematicCanvasProps> = ({
     };
 
     animId = requestAnimationFrame(render);
-    animationFrameIdRef.current = animId;
 
     return () => {
-      cancelAnimationFrame(animId);
     };
   }, [isPlaying, onAnimationComplete, onFrameUpdate]);
 

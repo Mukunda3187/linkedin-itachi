@@ -180,14 +180,17 @@ export const CinematicCanvas: React.FC<CinematicCanvasProps> = ({
         }
       }
 
-      animId = requestAnimationFrame(render);
+      animationId = requestAnimationFrame(render);
     };
 
-    animId = requestAnimationFrame(render);
+    const animationId = requestAnimationFrame(render);
 
     return () => {
+      cancelAnimationFrame(animationId);
     };
+  }, [isPlaying, onAnimationComplete]);
 
+  
   // Helper to map screen coordinates to image coordinates
   const getCoverMetrics = useCallback(() => {
     const width = window.innerWidth;

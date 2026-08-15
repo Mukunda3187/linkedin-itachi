@@ -4,6 +4,7 @@ interface CinematicCanvasProps {
   isPlaying: boolean;
   onAnimationComplete: () => void;
   onEyeClick: () => void;
+  isEyeClickable: boolean;
   currentFrameIndex: number;
   onFrameUpdate: (frame: number) => void;
 }
@@ -294,8 +295,6 @@ export const CinematicCanvas: React.FC<CinematicCanvasProps> = ({
       onEyeClick();
     }
   };
-
-  const loadingPercentage = Math.round((loadedCount / TOTAL_FRAMES) * 100);
 
   return (
     <div

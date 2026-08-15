@@ -104,7 +104,6 @@ export const App: React.FC = () => {
           durationSeconds={15}
         />
       )}
-     )}
     </main>
   );
 };

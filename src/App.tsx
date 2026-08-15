@@ -4,7 +4,6 @@ import { FileUploadTrigger } from './components/FileUploadTrigger';
 import { LinkedInPostCard } from './components/LinkedInPostCard';
 import { ControlsOverlay } from './components/ControlsOverlay';
 import { analyzeImagesAndGeneratePost } from './services/postService';
-import { audioEngine } from './services/audioEngine';
 
 type ExperienceState =
   | 'idle' // Normal eyes, waiting for user click
@@ -77,7 +76,6 @@ export const App: React.FC = () => {
     setUploadedFiles([]);
     setErrorMessage(null);
     setShouldAutoUpload(false);
-    audioEngine.playClickTick();
   }, []);
 
   return (

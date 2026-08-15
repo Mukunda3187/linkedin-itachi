@@ -34,7 +34,10 @@ export const LinkedInPostCard: React.FC<LinkedInPostCardProps> = ({
   };
 
   return (
-    <div className="itachi-post-overlay pointer-events-auto select-text">
+    <div
+      className="itachi-post-overlay pointer-events-auto select-text"
+      style={{ fontFamily: 'var(--font-russo)' }}
+    >
       <div
         className="itachi-post-card glass-card-crimson text-neutral-100 transition-all duration-500 shadow-2xl card-enter"
         style={{
@@ -45,7 +48,7 @@ export const LinkedInPostCard: React.FC<LinkedInPostCardProps> = ({
         <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-black/40 backdrop-blur-md">
           <div className="flex items-center space-x-2.5">
             <div className="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse" />
-            <span className="font-serif tracking-widest text-xs uppercase text-neutral-300 font-semibold">
+            <span className="tracking-widest text-xs uppercase text-neutral-300">
               LinkedIn Description
             </span>
           </div>
@@ -59,27 +62,23 @@ export const LinkedInPostCard: React.FC<LinkedInPostCardProps> = ({
           </button>
         </div>
 
-        {/* Scrollable Post Content */}
-        <div className="flex-1 overflow-y-auto px-6 py-5 custom-scrollbar font-sans text-sm md:text-base leading-relaxed text-neutral-200 whitespace-pre-wrap selection:bg-red-900 selection:text-white">
-          {postText}
-        </div>
+        {/* Body: post text + copy button side by side */}
+        <div className="flex-1 flex items-end gap-4 px-6 py-5">
+          <div className="flex-1 overflow-y-auto custom-scrollbar text-sm md:text-base leading-relaxed text-neutral-100 whitespace-pre-wrap selection:bg-red-900 selection:text-white">
+            {postText}
+          </div>
 
-        {/* Footer Actions */}
-        <div className="px-6 py-4 border-t border-white/10 bg-black/50 backdrop-blur-md flex items-center justify-end">
           <button
             onClick={handleCopy}
-            className={`p-3 rounded-xl transition-all duration-300 shadow-lg ${
+            className={`shrink-0 flex flex-col items-center justify-center gap-1 w-16 h-16 rounded-xl border-2 transition-all duration-300 ${
               copied
-                ? 'bg-emerald-600/90 text-white shadow-emerald-900/50 scale-[1.05]'
-                : 'bg-gradient-to-r from-red-700 to-red-600 hover:from-red-600 hover:to-red-500 text-white shadow-red-950/80 hover:shadow-red-800/40 active:scale-95'
+                ? 'border-emerald-500 text-emerald-400 bg-emerald-500/10 scale-[1.05]'
+                : 'border-red-600/70 text-red-500 hover:border-red-500 hover:bg-red-600/10 active:scale-95'
             }`}
             title={copied ? 'Copied' : 'Copy'}
           >
-            {copied ? (
-              <Check className="w-5 h-5 text-white animate-scale-check" />
-            ) : (
-              <Copy className="w-5 h-5 text-red-200" />
-            )}
+            {copied ? <Check className="w-5 h-5" /> : <Copy className="w-5 h-5" />}
+            <span className="text-[9px] tracking-wider">{copied ? 'COPIED' : 'COPY'}</span>
           </button>
         </div>
       </div>

@@ -56,7 +56,12 @@ export const LinkedInPostCard: React.FC<LinkedInPostCardProps> = ({
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <div className="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse" style={{ flexShrink: 0 }} />
+            <img
+              src="/sharingan.png"
+              alt=""
+              className="sharingan-spin"
+              style={{ width: '16px', height: '16px', flexShrink: 0 }}
+            />
             <span style={{ letterSpacing: '0.15em', fontSize: '12px', textTransform: 'uppercase', color: '#d4d4d4' }}>
               LinkedIn Description
             </span>

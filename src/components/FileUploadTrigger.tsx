@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from 'react';
-import { UploadCloud, AlertCircle } from 'lucide-react';
+import { AlertCircle } from 'lucide-react';
 
 interface FileUploadTriggerProps {
   onFilesSelected: (files: File[]) => void;
@@ -65,17 +65,18 @@ export const FileUploadTrigger: React.FC<FileUploadTriggerProps> = ({
       {/* Floating subtle status badge when files are selected or analyzing */}
       {(isAnalyzing || (uploadedFiles.length > 0 && !errorMessage)) && (
         <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-30 pointer-events-none">
-          <div className="flex items-center space-x-3 px-5 py-2.5 rounded-full glass-panel border border-red-500/30 shadow-lg shadow-black/80 backdrop-blur-xl animate-breathe">
-            <div className="relative flex items-center justify-center">
-              <div className="w-2.5 h-2.5 rounded-full bg-red-500 animate-ping absolute" />
-              <div className="w-2 h-2 rounded-full bg-red-600 relative" />
-            </div>
+        <div className="flex items-center space-x-3 px-5 py-2.5 rounded-full glass-panel border border-red-500/30 shadow-lg shadow-black/80 backdrop-blur-xl animate-breathe">
             <div className="flex items-center space-x-2 text-xs font-medium text-neutral-200">
-              <UploadCloud className="w-4 h-4 text-red-400 animate-pulse" />
+              <img
+                src="/sharingan.png"
+                alt=""
+                className="sharingan-spin"
+                style={{ width: '16px', height: '16px' }}
+              />
               <span>
                 {isAnalyzing
-                  ? `Analyzing ${uploadedFiles.length} Project Image${uploadedFiles.length > 1 ? 's' : ''}...`
-                  : `${uploadedFiles.length} Image${uploadedFiles.length > 1 ? 's' : ''} Loaded`}
+                  ? `Analyzing ${uploadedFiles.length} Project files${uploadedFiles.length > 1 ? 's' : ''}...`
+                  : `${uploadedFiles.length} files${uploadedFiles.length > 1 ? 's' : ''} Loaded`}
               </span>
             </div>
           </div>

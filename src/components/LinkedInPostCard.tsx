@@ -16,7 +16,6 @@ export const LinkedInPostCard: React.FC<LinkedInPostCardProps> = ({
   const [isExiting, setIsExiting] = useState(false);
   const [timeLeft, setTimeLeft] = useState(durationSeconds);
   const startTimeRef = useRef<number>(Date.now());
-  const timerIdRef = useRef<number | null>(null);
 
   // 15-second automatic countdown
   useEffect(() => {
@@ -38,8 +37,6 @@ export const LinkedInPostCard: React.FC<LinkedInPostCardProps> = ({
         onAutoDismiss();
       }
     }, 100);
-
-    timerIdRef.current = interval;
 
     return () => {
       window.clearInterval(interval);

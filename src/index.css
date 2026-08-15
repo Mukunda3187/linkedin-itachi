@@ -2,8 +2,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&family=Russo+One&display=swap');
 :root {
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-display: 'Outfit', var(--font-sans);
-  --font-serif: 'Cinzel', serif;
   --font-russo: 'Russo One', sans-serif;
   
   --bg-primary: #050507;
@@ -25,10 +23,6 @@
   --border-glass: rgba(255, 255, 255, 0.12);
   --border-crimson: rgba(239, 68, 68, 0.28);
   --border-crimson-active: rgba(239, 68, 68, 0.6);
-  
-  --glow-crimson-sm: 0 0 15px rgba(220, 38, 38, 0.25);
-  --glow-crimson-md: 0 0 30px rgba(220, 38, 38, 0.35);
-  --glow-crimson-lg: 0 0 50px rgba(220, 38, 38, 0.45);
 }
 
 * {
@@ -106,17 +100,6 @@ html, body, #root {
   mix-blend-mode: screen;
 }
 
-.eye-glow-ring {
-  opacity: 0;
-  position: absolute;
-  pointer-events: none;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(239, 68, 68, 0.35) 0%, rgba(220, 38, 38, 0.15) 45%, transparent 70%);
-  filter: blur(8px);
-  transition: opacity 0.4s ease, transform 0.4s ease;
-  transform: translate(-50%, -50%) scale(0.9);
-}
-
 /* Micro animations */
 @keyframes subtle-breathe {
   0%, 100% {
@@ -139,9 +122,6 @@ html, body, #root {
   animation: cardFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-.card-exit {
-  animation: cardFadeOut 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
 
 @keyframes cardFadeIn {
   from {
@@ -151,17 +131,6 @@ html, body, #root {
   to {
     opacity: 1;
     transform: scale(1) translateY(0);
-  }
-}
-
-@keyframes cardFadeOut {
-  from {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
-  to {
-    opacity: 0;
-    transform: scale(0.95) translateY(-8px);
   }
 }
 

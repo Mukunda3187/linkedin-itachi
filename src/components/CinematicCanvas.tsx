@@ -8,6 +8,7 @@ interface CinematicCanvasProps {
 }
 
 const TOTAL_FRAMES = 73;
+const ROTATE_BREAKPOINT = 900; // px, phones only
 
 interface Particle {
   x: number;
@@ -30,11 +31,37 @@ export const CinematicCanvas: React.FC<CinematicCanvasProps> = ({
   const imagesRef = useRef<HTMLImageElement[]>([]);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [isHoveringEye, setIsHoveringEye] = useState(false);
-  
+
+  // Real (actual) window size, tracked live
+  const [realDims, setRealDims] = useState({
+    w: typeof window !== 'undefined' ? window.innerWidth : 0,
+    h: typeof window !== 'undefined' ? window.innerHeight : 0,
+  });
+
   const particlesRef = useRef<Particle[]>([]);
   const lastTimeRef = useRef<number>(0);
   const frameProgressRef = useRef<number>(1);
   const hasTriggeredCompleteRef = useRef<boolean>(false);
+
+  // Keep real window size up to date
+  useEffect(() => {
+    const handleResize = () => {
+      setRealDims({ w: window.innerWidth, h: window.innerHeight });
+    };
+    window.addEventListener('resize', handleResize);
+    window.addEventListener('orientationchange', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('orientationchange', handleResize);
+    };
+  }, []);
+
+  // Should we rotate the background to landscape? (narrow phone, held upright)
+  const isPortraitPhone = realDims.w > 0 && realDims.w < ROTATE_BREAKPOINT && realDims.w < realDims.h;
+
+  // "Effective" width/height the canvas draws with (swapped when rotated)
+  const effW = isPortraitPhone ? realDims.h : realDims.w;
+  const effH = isPortraitPhone ? realDims.w : realDims.h;
 
   useEffect(() => {
     const images: HTMLImageElement[] = [];
@@ -42,12 +69,12 @@ export const CinematicCanvas: React.FC<CinematicCanvasProps> = ({
     for (let i = 1; i <= TOTAL_FRAMES; i++) {
       const frameNum = String(i).padStart(3, '0');
       const img = new Image();
-      img.src = `/frames/ezgif-frame-${frameNum}.png`;
+      img.src = `/frames/ezgif-frame-${frameNum}.jpg`;
       images.push(img);
     }
     imagesRef.current = images;
   }, []);
-// Play the activation sound the moment the sequence starts
+  // Play the activation sound the moment the sequence starts
   useEffect(() => {
     if (isPlaying && audioRef.current) {
       audioRef.current.currentTime = 0;
@@ -64,8 +91,8 @@ export const CinematicCanvas: React.FC<CinematicCanvasProps> = ({
     for (let i = 0; i < particleCount; i++) {
       const isEmber = Math.random() > 0.65;
       particles.push({
-        x: Math.random() * window.innerWidth,
-        y: Math.random() * window.innerHeight,
+        x: Math.random() * effW,
+        y: Math.random() * effH,
         speedY: isEmber ? -(0.3 + Math.random() * 0.7) : 3 + Math.random() * 5,
         speedX: isEmber ? (Math.random() - 0.5) * 0.6 : (Math.random() - 0.5) * 0.4,
         size: isEmber ? 1.5 + Math.random() * 2 : 1 + Math.random() * 1.5,
@@ -75,6 +102,7 @@ export const CinematicCanvas: React.FC<CinematicCanvasProps> = ({
       });
     }
     particlesRef.current = particles;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Main Render Loop (Canvas drawing + particles + sequence animation)
@@ -102,9 +130,9 @@ export const CinematicCanvas: React.FC<CinematicCanvasProps> = ({
         }
       }
 
-      // Resize canvas to window
-      const width = window.innerWidth;
-      const height = window.innerHeight;
+      // Resize canvas to the effective (rotation-aware) size
+      const width = effW;
+      const height = effH;
       if (canvas.width !== width || canvas.height !== height) {
         canvas.width = width;
         canvas.height = height;
@@ -188,7 +216,7 @@ export const CinematicCanvas: React.FC<CinematicCanvasProps> = ({
         }
       }
 
-     animationId = requestAnimationFrame(render);
+      animationId = requestAnimationFrame(render);
     };
 
     let animationId = requestAnimationFrame(render);
@@ -196,13 +224,12 @@ export const CinematicCanvas: React.FC<CinematicCanvasProps> = ({
     return () => {
       cancelAnimationFrame(animationId);
     };
-  }, [isPlaying, onAnimationComplete]);
+  }, [isPlaying, onAnimationComplete, effW, effH]);
 
-  
-  // Helper to map screen coordinates to image coordinates
+  // Helper to map screen coordinates to image coordinates (in effective space)
   const getCoverMetrics = useCallback(() => {
-    const width = window.innerWidth;
-    const height = window.innerHeight;
+    const width = effW;
+    const height = effH;
     const imgRatio = 1920 / 1080;
     const screenRatio = width / height;
 
@@ -224,14 +251,32 @@ export const CinematicCanvas: React.FC<CinematicCanvasProps> = ({
     }
 
     return { drawW, drawH, drawX, drawY };
-  }, []);
+  }, [effW, effH]);
+
+  // Convert a real click/tap point into the rotation-aware "local" coordinate
+  // space that the canvas actually draws in.
+  const toLocalPoint = useCallback(
+    (clientX: number, clientY: number) => {
+      if (!isPortraitPhone) {
+        return { x: clientX, y: clientY };
+      }
+      // Background is rotated 90deg clockwise via CSS (transform-origin: top left,
+      // rotate(90deg) translateY(-100%)). This is the matching inverse mapping.
+      return {
+        x: clientY,
+        y: realDims.w - clientX,
+      };
+    },
+    [isPortraitPhone, realDims.w]
+  );
 
   // Hit test for Itachi's eyes
   const isPointInEyeRegion = useCallback(
     (clientX: number, clientY: number) => {
+      const { x, y } = toLocalPoint(clientX, clientY);
       const { drawW, drawH, drawX, drawY } = getCoverMetrics();
-      const normX = (clientX - drawX) / drawW;
-      const normY = (clientY - drawY) / drawH;
+      const normX = (x - drawX) / drawW;
+      const normY = (y - drawY) / drawH;
 
       // In 1920x1080 frame:
       // Left eye (viewer left): X: 37% - 46%, Y: 41% - 48%
@@ -242,7 +287,7 @@ export const CinematicCanvas: React.FC<CinematicCanvasProps> = ({
 
       return inX && inY;
     },
-    [getCoverMetrics]
+    [getCoverMetrics, toLocalPoint]
   );
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -264,14 +309,27 @@ export const CinematicCanvas: React.FC<CinematicCanvasProps> = ({
     }
   };
 
-return (
+  const wrapperStyle: React.CSSProperties = isPortraitPhone
+    ? {
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: `${effW}px`,
+        height: `${effH}px`,
+        transformOrigin: 'top left',
+        transform: 'rotate(90deg) translateY(-100%)',
+        cursor: isHoveringEye && isEyeClickable && !isPlaying ? 'pointer' : 'default',
+      }
+    : {
+        cursor: isHoveringEye && isEyeClickable && !isPlaying ? 'pointer' : 'default',
+      };
+
+  return (
     <div
-      className="relative w-full h-full overflow-hidden select-none"
+      className={isPortraitPhone ? 'overflow-hidden select-none' : 'relative w-full h-full overflow-hidden select-none'}
       onMouseMove={handleMouseMove}
       onClick={handleClick}
-      style={{
-        cursor: isHoveringEye && isEyeClickable && !isPlaying ? 'pointer' : 'default',
-      }}
+      style={wrapperStyle}
     >
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full block" />
       <audio ref={audioRef} src="/mangekyo-sound.mp3" preload="auto" />

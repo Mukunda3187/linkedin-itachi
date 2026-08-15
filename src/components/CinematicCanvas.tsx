@@ -264,7 +264,7 @@ export const CinematicCanvas: React.FC<CinematicCanvasProps> = ({
     }
   };
 
- return (
+return (
     <div
       className="relative w-full h-full overflow-hidden select-none"
       onMouseMove={handleMouseMove}
@@ -275,8 +275,6 @@ export const CinematicCanvas: React.FC<CinematicCanvasProps> = ({
     >
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full block" />
       <audio ref={audioRef} src="/mangekyo-sound.mp3" preload="auto" />
-    </div>
-      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full block" />
     </div>
   );
 };

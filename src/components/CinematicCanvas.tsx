@@ -69,7 +69,7 @@ export const CinematicCanvas: React.FC<CinematicCanvasProps> = ({
     for (let i = 1; i <= TOTAL_FRAMES; i++) {
       const frameNum = String(i).padStart(3, '0');
       const img = new Image();
-      img.src = `/frames/ezgif-frame-${frameNum}.jpg`;
+      img.src = `/frames/ezgif-frame-${frameNum}.png`;
       images.push(img);
     }
     imagesRef.current = images;

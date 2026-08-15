@@ -72,10 +72,10 @@ export const LinkedInPostCard: React.FC<LinkedInPostCardProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-40 flex items-center justify-center p-4 md:p-6 pointer-events-auto select-text">
+    <div className="itachi-post-overlay pointer-events-auto select-text">
       {/* Centered Glassmorphic Modal Card */}
       <div
-        className={`relative w-full max-w-2xl max-h-[85vh] flex flex-col rounded-2xl glass-card-crimson text-neutral-100 overflow-hidden transition-all duration-500 shadow-2xl ${
+        className={`itachi-post-card glass-card-crimson text-neutral-100 transition-all duration-500 shadow-2xl ${
           isExiting ? 'card-exit' : 'card-enter'
         }`}
         style={{

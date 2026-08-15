@@ -28,6 +28,7 @@ export const CinematicCanvas: React.FC<CinematicCanvasProps> = ({
 }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const imagesRef = useRef<HTMLImageElement[]>([]);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
   const [isHoveringEye, setIsHoveringEye] = useState(false);
   
   const particlesRef = useRef<Particle[]>([]);
@@ -46,7 +47,15 @@ export const CinematicCanvas: React.FC<CinematicCanvasProps> = ({
     }
     imagesRef.current = images;
   }, []);
-
+// Play the activation sound the moment the sequence starts
+  useEffect(() => {
+    if (isPlaying && audioRef.current) {
+      audioRef.current.currentTime = 0;
+      audioRef.current.play().catch(() => {
+        // Autoplay can be blocked in rare cases — fail silently
+      });
+    }
+  }, [isPlaying]);
   // Initialize ambient particle system (rain & crimson embers)
   useEffect(() => {
     const particles: Particle[] = [];
@@ -255,7 +264,7 @@ export const CinematicCanvas: React.FC<CinematicCanvasProps> = ({
     }
   };
 
-  return (
+ return (
     <div
       className="relative w-full h-full overflow-hidden select-none"
       onMouseMove={handleMouseMove}
@@ -264,6 +273,9 @@ export const CinematicCanvas: React.FC<CinematicCanvasProps> = ({
         cursor: isHoveringEye && isEyeClickable && !isPlaying ? 'pointer' : 'default',
       }}
     >
+      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full block" />
+      <audio ref={audioRef} src="/mangekyo-sound.mp3" preload="auto" />
+    </div>
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full block" />
     </div>
   );

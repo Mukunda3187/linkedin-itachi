@@ -46,7 +46,7 @@ export const LinkedInPostCard: React.FC<LinkedInPostCardProps> = ({
           <div className="flex items-center space-x-2.5">
             <div className="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse" />
             <span className="font-serif tracking-widest text-xs uppercase text-neutral-300 font-semibold">
-              Mangekyō Generated • LinkedIn Post
+              LinkedIn Description
             </span>
           </div>
 
@@ -66,11 +66,7 @@ export const LinkedInPostCard: React.FC<LinkedInPostCardProps> = ({
 
         {/* Footer Actions */}
         <div className="px-6 py-4 border-t border-white/10 bg-black/50 backdrop-blur-md flex flex-col sm:flex-row items-center justify-between gap-3">
-          <div className="text-xs text-neutral-400 flex items-center space-x-1.5">
-            <Sparkles className="w-3.5 h-3.5 text-red-400" />
-            <span>Ready for 1-click LinkedIn publishing</span>
-          </div>
-
+          
           <button
             onClick={handleCopy}
             className={`w-full sm:w-auto px-6 py-2.5 rounded-xl font-medium text-xs md:text-sm tracking-wider uppercase transition-all duration-300 flex items-center justify-center space-x-2 shadow-lg ${
@@ -81,13 +77,10 @@ export const LinkedInPostCard: React.FC<LinkedInPostCardProps> = ({
           >
             {copied ? (
               <>
-                <Check className="w-4 h-4 text-white animate-scale-check" />
-                <span className="font-bold">POST COPIED ✓</span>
               </>
             ) : (
               <>
                 <Copy className="w-4 h-4 text-red-200" />
-                <span>COPY WHOLE TEXT</span>
               </>
             )}
           </button>

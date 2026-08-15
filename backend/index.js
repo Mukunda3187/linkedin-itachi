@@ -1,5 +1,10 @@
 import express from 'express';
 import cors from 'cors';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 app.use(cors());
@@ -7,10 +12,6 @@ app.use(express.json({ limit: '25mb' }));
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const GEMINI_MODEL = 'gemini-2.0-flash';
-
-app.get('/', (req, res) => {
-  res.send('linkedin-itachi backend is running');
-});
 
 app.post('/api/generate-post', async (req, res) => {
   try {
@@ -68,6 +69,15 @@ app.post('/api/generate-post', async (req, res) => {
     console.error('Server error:', err);
     return res.status(500).json({ error: 'Something went wrong on the server.' });
   }
+});
+
+// Serve the built frontend (the dist folder created by "npm run build")
+const distPath = path.join(__dirname, '..', 'dist');
+app.use(express.static(distPath));
+
+// Any route that isn't /api/... should return the frontend's index.html
+app.get('*', (req, res) => {
+  res.sendFile(path.join(distPath, 'index.html'));
 });
 
 const PORT = process.env.PORT || 3000;

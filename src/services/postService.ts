@@ -14,9 +14,6 @@ function fileToBase64(file: File): Promise<string> {
 }
 
 export async function analyzeImagesAndGeneratePost(files: File[]): Promise<ImageAnalysisResult> {
-  if (!API_BASE) {
-    throw new Error('Backend URL is not configured.');
-  }
 
   const images = await Promise.all(
     files.map(async (file) => ({

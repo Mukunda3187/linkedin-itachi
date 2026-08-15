@@ -66,16 +66,12 @@ export const FileUploadTrigger: React.FC<FileUploadTriggerProps> = ({
         <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-30 pointer-events-none">
         <div className="flex items-center space-x-3 px-5 py-2.5 rounded-full glass-panel border border-red-500/30 shadow-lg shadow-black/80 backdrop-blur-xl animate-breathe">
             <div className="flex items-center space-x-2 text-xs font-medium text-neutral-200">
-              {isAnalyzing ? (
-                <img
-                  src="/sharingan.png"
-                  alt=""
-                  className="sharingan-spin"
-                  style={{ width: '16px', height: '16px' }}
-                />
-              ) : (
-                <UploadCloud className="w-4 h-4 text-red-400 animate-pulse" />
-              )}
+              <img
+                src="/sharingan.png"
+                alt=""
+                className="sharingan-spin"
+                style={{ width: '16px', height: '16px' }}
+              />
               <span>
                 {isAnalyzing
                   ? `Analyzing ${uploadedFiles.length} Project files${uploadedFiles.length > 1 ? 's' : ''}...`

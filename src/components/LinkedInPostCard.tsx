@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Copy, Check, Sparkles, Clock } from 'lucide-react';
-import { audioEngine } from '../services/audioEngine';
 
 interface LinkedInPostCardProps {
   postText: string;
@@ -51,7 +50,6 @@ export const LinkedInPostCard: React.FC<LinkedInPostCardProps> = ({
     try {
       await navigator.clipboard.writeText(postText);
       setCopied(true);
-      audioEngine.playCopySuccess();
       setTimeout(() => {
         setCopied(false);
       }, 3000);
@@ -64,7 +62,6 @@ export const LinkedInPostCard: React.FC<LinkedInPostCardProps> = ({
       document.execCommand('copy');
       document.body.removeChild(textArea);
       setCopied(true);
-      audioEngine.playCopySuccess();
       setTimeout(() => {
         setCopied(false);
       }, 3000);

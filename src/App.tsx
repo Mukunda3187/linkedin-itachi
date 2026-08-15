@@ -2,7 +2,6 @@ import React, { useState, useCallback } from 'react';
 import { CinematicCanvas } from './components/CinematicCanvas';
 import { FileUploadTrigger } from './components/FileUploadTrigger';
 import { LinkedInPostCard } from './components/LinkedInPostCard';
-import { ControlsOverlay } from './components/ControlsOverlay';
 import { analyzeImagesAndGeneratePost } from './services/postService';
 
 type ExperienceState =
@@ -62,20 +61,9 @@ export const App: React.FC = () => {
     }
   };
 
-  // Step 11: 15-second timer finishes -> smooth auto-dismiss
+ // Step 11: 15-second timer finishes -> automatically reload the page
   const handlePostAutoDismiss = useCallback(() => {
-    setState('complete');
-    // Keep frame 73 or allow re-clicking to awaken again
-  }, []);
-
-  // Reset / Replay experience
-  const handleReset = useCallback(() => {
-    setState('idle');
-    setCurrentFrame(1);
-    setGeneratedPost('');
-    setUploadedFiles([]);
-    setErrorMessage(null);
-    setShouldAutoUpload(false);
+    window.location.reload();
   }, []);
 
   return (
@@ -116,13 +104,8 @@ export const App: React.FC = () => {
           durationSeconds={15}
         />
       )}
-      {/* Top Controls Overlay (Audio Mute, Reset "Awaken Again") */}
-      <ControlsOverlay
-        onReset={handleReset}
-        showReset={state === 'complete' || state === 'mangekyo' || state === 'post_visible'}
-      />
+     )}
     </main>
   );
 };
-
 export default App;

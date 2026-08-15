@@ -75,8 +75,8 @@ export const FileUploadTrigger: React.FC<FileUploadTriggerProps> = ({
               />
              <span>
                 {isAnalyzing
-                  ? `Analyzing ${uploadedFiles.length} image${uploadedFiles.length > 1 ? 's' : ''}...`
-                  : `${uploadedFiles.length} image${uploadedFiles.length > 1 ? 's' : ''} loaded`}
+                  ? `Analyzing ${uploadedFiles.length} file${uploadedFiles.length > 1 ? 's' : ''}...`
+                  : `${uploadedFiles.length} file${uploadedFiles.length > 1 ? 's' : ''} loaded`}
               </span>
             </div>
           </div>

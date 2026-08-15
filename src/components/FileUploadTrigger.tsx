@@ -22,7 +22,7 @@ export const FileUploadTrigger: React.FC<FileUploadTriggerProps> = ({
 }) => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  // Automatically launch file picker when requested
+// Automatically launch file picker when requested
   useEffect(() => {
     if (shouldTriggerAutoUpload && fileInputRef.current) {
       // Small timeout ensures render transition is complete
@@ -31,6 +31,21 @@ export const FileUploadTrigger: React.FC<FileUploadTriggerProps> = ({
           fileInputRef.current.value = '';
           fileInputRef.current.click();
           onUploadHandled();
+
+          // Detect if the picker was closed without choosing a file
+          const handleWindowFocus = () => {
+            window.removeEventListener('focus', handleWindowFocus);
+            // Small delay lets the browser finish updating input.files first
+            setTimeout(() => {
+              if (
+                fileInputRef.current &&
+                (!fileInputRef.current.files || fileInputRef.current.files.length === 0)
+              ) {
+                window.location.reload();
+              }
+            }, 300);
+          };
+          window.addEventListener('focus', handleWindowFocus);
         }
       }, 150);
       return () => clearTimeout(timer);

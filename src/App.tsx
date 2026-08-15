@@ -3,8 +3,7 @@ import { CinematicCanvas } from './components/CinematicCanvas';
 import { FileUploadTrigger } from './components/FileUploadTrigger';
 import { LinkedInPostCard } from './components/LinkedInPostCard';
 import { ControlsOverlay } from './components/ControlsOverlay';
-import { ApiKeyModal } from './components/ApiKeyModal';
-import { analyzeImagesAndGeneratePost } from './services/geminiVision';
+import { analyzeImagesAndGeneratePost } from './services/postService';
 import { audioEngine } from './services/audioEngine';
 
 type ExperienceState =
@@ -21,7 +20,6 @@ export const App: React.FC = () => {
   const [shouldAutoUpload, setShouldAutoUpload] = useState<boolean>(false);
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
   const [generatedPost, setGeneratedPost] = useState<string>('');
-  const [isApiKeyModalOpen, setIsApiKeyModalOpen] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   // Step 2: User clicks Itachi's eye
@@ -120,18 +118,10 @@ export const App: React.FC = () => {
           durationSeconds={15}
         />
       )}
-
-      {/* Top Controls Overlay (Audio Mute, Reset "Awaken Again", Gemini API Key) */}
+      {/* Top Controls Overlay (Audio Mute, Reset "Awaken Again") */}
       <ControlsOverlay
-        onOpenApiKeyModal={() => setIsApiKeyModalOpen(true)}
         onReset={handleReset}
         showReset={state === 'complete' || state === 'mangekyo' || state === 'post_visible'}
-      />
-
-      {/* Gemini API Key Configuration Modal */}
-      <ApiKeyModal
-        isOpen={isApiKeyModalOpen}
-        onClose={() => setIsApiKeyModalOpen(false)}
       />
     </main>
   );

@@ -7,7 +7,7 @@ interface CinematicCanvasProps {
   isEyeClickable: boolean;
 }
 
-const TOTAL_FRAMES = 73;
+const TOTAL_FRAMES = 80;
 const ROTATE_BREAKPOINT = 900; // px, phones only
 
 interface Particle {

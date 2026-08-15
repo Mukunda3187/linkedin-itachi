@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { CinematicCanvas } from './components/CinematicCanvas';
 import { FileUploadTrigger } from './components/FileUploadTrigger';
 import { LinkedInPostCard } from './components/LinkedInPostCard';
@@ -60,9 +60,20 @@ export const App: React.FC = () => {
     }
   };
 
- const handleClosePost = useCallback(() => {
+const handleClosePost = useCallback(() => {
     window.location.reload();
   }, []);
+
+  // If an error is shown, automatically reload the page after 15 seconds
+  useEffect(() => {
+    if (!errorMessage) return;
+
+    const timer = window.setTimeout(() => {
+      window.location.reload();
+    }, 10000);
+
+    return () => window.clearTimeout(timer);
+  }, [errorMessage]);
 
   return (
     <main className="relative w-screen h-screen overflow-hidden bg-[#050507] text-white">

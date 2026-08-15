@@ -14,7 +14,6 @@ type ExperienceState =
 
 export const App: React.FC = () => {
   const [state, setState] = useState<ExperienceState>('idle');
-  const [currentFrame, setCurrentFrame] = useState<number>(1);
   const [shouldAutoUpload, setShouldAutoUpload] = useState<boolean>(false);
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
   const [generatedPost, setGeneratedPost] = useState<string>('');
@@ -74,8 +73,6 @@ export const App: React.FC = () => {
         onAnimationComplete={handleAnimationComplete}
         onEyeClick={handleEyeClick}
         isEyeClickable={state === 'idle' || state === 'complete'}
-        currentFrameIndex={currentFrame}
-        onFrameUpdate={setCurrentFrame}
       />
 
       {/* Cinematic Vignette Overlay */}

@@ -1,0 +1,140 @@
+import React, { useState, useCallback } from 'react';
+import { CinematicCanvas } from './components/CinematicCanvas';
+import { FileUploadTrigger } from './components/FileUploadTrigger';
+import { LinkedInPostCard } from './components/LinkedInPostCard';
+import { ControlsOverlay } from './components/ControlsOverlay';
+import { ApiKeyModal } from './components/ApiKeyModal';
+import { analyzeImagesAndGeneratePost } from './services/geminiVision';
+import { audioEngine } from './services/audioEngine';
+
+type ExperienceState =
+  | 'idle' // Normal eyes, waiting for user click
+  | 'animating' // Sharingan evolution sequence playing (frames 1-73)
+  | 'mangekyo' // Sequence finished at frame 73, auto-triggering file picker
+  | 'analyzing' // Processing uploaded images with Gemini Vision
+  | 'post_visible' // Centered glassmorphic LinkedIn post with 15s timer
+  | 'complete'; // Post dismissed, ready to awaken again
+
+export const App: React.FC = () => {
+  const [state, setState] = useState<ExperienceState>('idle');
+  const [currentFrame, setCurrentFrame] = useState<number>(1);
+  const [shouldAutoUpload, setShouldAutoUpload] = useState<boolean>(false);
+  const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
+  const [generatedPost, setGeneratedPost] = useState<string>('');
+  const [isApiKeyModalOpen, setIsApiKeyModalOpen] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  // Step 2: User clicks Itachi's eye
+  const handleEyeClick = useCallback(() => {
+    if (state === 'idle' || state === 'complete') {
+      setErrorMessage(null);
+      setState('animating');
+    }
+  }, [state]);
+
+  // Step 4 & 5: Sequence reaches Frame 73 (Mangekyō Sharingan)
+  const handleAnimationComplete = useCallback(() => {
+    setState('mangekyo');
+    // Automatically trigger file picker immediately
+    setShouldAutoUpload(true);
+  }, []);
+
+  const handleUploadHandled = useCallback(() => {
+    setShouldAutoUpload(false);
+  }, []);
+
+  // Step 6 & 7 & 8: User selected images -> AI Analysis & LinkedIn post generation
+  const handleFilesSelected = async (files: File[]) => {
+    if (!files || files.length === 0) {
+      setErrorMessage('Unable to load the selected image. Please try again.');
+      return;
+    }
+
+    try {
+      setUploadedFiles(files);
+      setState('analyzing');
+      setErrorMessage(null);
+
+      const result = await analyzeImagesAndGeneratePost(files);
+      setGeneratedPost(result.postText);
+      setState('post_visible');
+    } catch (err) {
+      console.error('Analysis error:', err);
+      setErrorMessage('Something went wrong while analyzing your images. Please try again.');
+      setState('mangekyo');
+    }
+  };
+
+  // Step 11: 15-second timer finishes -> smooth auto-dismiss
+  const handlePostAutoDismiss = useCallback(() => {
+    setState('complete');
+    // Keep frame 73 or allow re-clicking to awaken again
+  }, []);
+
+  // Reset / Replay experience
+  const handleReset = useCallback(() => {
+    setState('idle');
+    setCurrentFrame(1);
+    setGeneratedPost('');
+    setUploadedFiles([]);
+    setErrorMessage(null);
+    setShouldAutoUpload(false);
+    audioEngine.playClickTick();
+  }, []);
+
+  return (
+    <main className="relative w-screen h-screen overflow-hidden bg-[#050507] text-white">
+      {/* Background Cinematic Canvas (Frames 1-73 + Atmospheric Embers & Rain) */}
+      <CinematicCanvas
+        isPlaying={state === 'animating'}
+        onAnimationComplete={handleAnimationComplete}
+        onEyeClick={handleEyeClick}
+        isEyeClickable={state === 'idle' || state === 'complete'}
+        currentFrameIndex={currentFrame}
+        onFrameUpdate={setCurrentFrame}
+      />
+
+      {/* Cinematic Vignette Overlay */}
+      <div className="cinematic-vignette pointer-events-none" />
+      <div className="crimson-ambient-glow pointer-events-none" />
+
+      {/* Hidden File Input with Programmatic Trigger */}
+      <FileUploadTrigger
+        onFilesSelected={handleFilesSelected}
+        shouldTriggerAutoUpload={shouldAutoUpload}
+        onUploadHandled={handleUploadHandled}
+        uploadedFiles={uploadedFiles}
+        isAnalyzing={state === 'analyzing'}
+        errorMessage={errorMessage}
+        onRetry={() => {
+          setErrorMessage(null);
+          setShouldAutoUpload(true);
+        }}
+      />
+
+      {/* Floating Centered LinkedIn Post Card (with 15s auto-dismiss) */}
+      {state === 'post_visible' && generatedPost && (
+        <LinkedInPostCard
+          postText={generatedPost}
+          onAutoDismiss={handlePostAutoDismiss}
+          durationSeconds={15}
+        />
+      )}
+
+      {/* Top Controls Overlay (Audio Mute, Reset "Awaken Again", Gemini API Key) */}
+      <ControlsOverlay
+        onOpenApiKeyModal={() => setIsApiKeyModalOpen(true)}
+        onReset={handleReset}
+        showReset={state === 'complete' || state === 'mangekyo' || state === 'post_visible'}
+      />
+
+      {/* Gemini API Key Configuration Modal */}
+      <ApiKeyModal
+        isOpen={isApiKeyModalOpen}
+        onClose={() => setIsApiKeyModalOpen(false)}
+      />
+    </main>
+  );
+};
+
+export default App;

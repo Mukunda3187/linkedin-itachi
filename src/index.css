@@ -1,0 +1,208 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Outfit', var(--font-sans);
+  --font-serif: 'Cinzel', serif;
+  
+  --bg-primary: #050507;
+  --bg-surface: rgba(12, 12, 16, 0.72);
+  --bg-glass: rgba(10, 10, 14, 0.82);
+  --bg-glass-card: rgba(8, 8, 12, 0.88);
+  
+  --crimson-base: #991b1b;
+  --crimson-glow: #dc2626;
+  --crimson-bright: #ef4444;
+  --crimson-dark: #450a0a;
+  
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --text-accent: #fca5a5;
+  
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-glass: rgba(255, 255, 255, 0.12);
+  --border-crimson: rgba(239, 68, 68, 0.28);
+  --border-crimson-active: rgba(239, 68, 68, 0.6);
+  
+  --glow-crimson-sm: 0 0 15px rgba(220, 38, 38, 0.25);
+  --glow-crimson-md: 0 0 30px rgba(220, 38, 38, 0.35);
+  --glow-crimson-lg: 0 0 50px rgba(220, 38, 38, 0.45);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html, body, #root {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  user-select: none;
+}
+
+/* Custom Scrollbar for Card */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(239, 68, 68, 0.3);
+  border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(239, 68, 68, 0.6);
+}
+
+/* Glassmorphism Styles */
+.glass-panel {
+  background: var(--bg-glass);
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  border: 1px solid var(--border-glass);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.85),
+              0 0 35px rgba(220, 38, 38, 0.12),
+              inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.glass-card-crimson {
+  background: var(--bg-glass-card);
+  backdrop-filter: blur(32px) saturate(200%);
+  -webkit-backdrop-filter: blur(32px) saturate(200%);
+  border: 1px solid var(--border-crimson);
+  box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.95),
+              0 0 45px rgba(220, 38, 38, 0.18),
+              inset 0 1px 1px rgba(255, 255, 255, 0.15),
+              inset 0 -1px 1px rgba(220, 38, 38, 0.1);
+}
+
+/* Vignette Overlay */
+.cinematic-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at center, transparent 35%, rgba(0, 0, 0, 0.45) 70%, rgba(5, 5, 8, 0.88) 100%);
+}
+
+.crimson-ambient-glow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at center, rgba(153, 27, 27, 0.08) 0%, transparent 60%);
+  mix-blend-mode: screen;
+}
+
+/* Subtle Eye Hover Glow */
+.eye-hotspot {
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.eye-hotspot:hover .eye-glow-ring {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1.08);
+}
+
+.eye-glow-ring {
+  opacity: 0;
+  position: absolute;
+  pointer-events: none;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(239, 68, 68, 0.35) 0%, rgba(220, 38, 38, 0.15) 45%, transparent 70%);
+  filter: blur(8px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  transform: translate(-50%, -50%) scale(0.9);
+}
+
+/* Micro animations */
+@keyframes subtle-breathe {
+  0%, 100% {
+    opacity: 0.25;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.4;
+    transform: scale(1.02);
+  }
+}
+
+.animate-breathe {
+  animation: subtle-breathe 4s ease-in-out infinite;
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.6;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.95);
+    opacity: 0.6;
+  }
+}
+
+.animate-pulse-ring {
+  animation: pulse-ring 2.5s infinite ease-in-out;
+}
+
+/* Animations for card entry and exit */
+.card-enter {
+  animation: cardFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.card-exit {
+  animation: cardFadeOut 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes cardFadeIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.94) translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1) translateY(0);
+  }
+}
+
+@keyframes cardFadeOut {
+  from {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1) translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.95) translateY(-8px);
+  }
+}
+
+/* Progress bar for 15s */
+@keyframes timerCountdown {
+  from {
+    width: 100%;
+  }
+  to {
+    width: 0%;
+  }
+}
+
+.timer-bar {
+  animation: timerCountdown 15s linear forwards;
+}

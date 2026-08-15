@@ -60,8 +60,7 @@ export const App: React.FC = () => {
     }
   };
 
- // Step 11: 15-second timer finishes -> automatically reload the page
-  const handlePostAutoDismiss = useCallback(() => {
+ const handleClosePost = useCallback(() => {
     window.location.reload();
   }, []);
 
@@ -93,12 +92,10 @@ export const App: React.FC = () => {
         }}
       />
 
-      {/* Floating Centered LinkedIn Post Card (with 15s auto-dismiss) */}
       {state === 'post_visible' && generatedPost && (
         <LinkedInPostCard
           postText={generatedPost}
-          onAutoDismiss={handlePostAutoDismiss}
-          durationSeconds={15}
+          onClose={handleClosePost}
         />
       )}
     </main>

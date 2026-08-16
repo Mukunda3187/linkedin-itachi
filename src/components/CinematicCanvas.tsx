@@ -5,6 +5,7 @@ interface CinematicCanvasProps {
   onAnimationComplete: () => void;
   onEyeClick: () => void;
   isEyeClickable: boolean;
+  onHeadbandClick: () => void;
 }
 
 const TOTAL_FRAMES = 80;
@@ -26,11 +27,13 @@ export const CinematicCanvas: React.FC<CinematicCanvasProps> = ({
   onAnimationComplete,
   onEyeClick,
   isEyeClickable,
+  onHeadbandClick,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const imagesRef = useRef<HTMLImageElement[]>([]);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [isHoveringEye, setIsHoveringEye] = useState(false);
+  const [isHoveringHeadband, setIsHoveringHeadband] = useState(false);
 
   // Real (actual) window size, tracked live
   const [realDims, setRealDims] = useState({
@@ -270,13 +273,23 @@ export const CinematicCanvas: React.FC<CinematicCanvasProps> = ({
     [isPortraitPhone, realDims.w]
   );
 
-  // Hit test for Itachi's eyes
-  const isPointInEyeRegion = useCallback(
+  // Shared normalized-position helper
+  const getNormalizedPoint = useCallback(
     (clientX: number, clientY: number) => {
       const { x, y } = toLocalPoint(clientX, clientY);
       const { drawW, drawH, drawX, drawY } = getCoverMetrics();
-      const normX = (x - drawX) / drawW;
-      const normY = (y - drawY) / drawH;
+      return {
+        normX: (x - drawX) / drawW,
+        normY: (y - drawY) / drawH,
+      };
+    },
+    [getCoverMetrics, toLocalPoint]
+  );
+
+  // Hit test for Itachi's eyes
+  const isPointInEyeRegion = useCallback(
+    (clientX: number, clientY: number) => {
+      const { normX, normY } = getNormalizedPoint(clientX, clientY);
 
       // In 1920x1080 frame:
       // Left eye (viewer left): X: 37% - 46%, Y: 41% - 48%
@@ -287,27 +300,47 @@ export const CinematicCanvas: React.FC<CinematicCanvasProps> = ({
 
       return inX && inY;
     },
-    [getCoverMetrics, toLocalPoint]
+    [getNormalizedPoint]
+  );
+
+  // Hit test for the headband, just above the leaf-symbol cut mark
+  const isPointInHeadbandRegion = useCallback(
+    (clientX: number, clientY: number) => {
+      const { normX, normY } = getNormalizedPoint(clientX, clientY);
+
+      const inX = normX >= 0.40 && normX <= 0.60;
+      const inY = normY >= 0.17 && normY <= 0.26;
+
+      return inX && inY;
+    },
+    [getNormalizedPoint]
   );
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!isEyeClickable || isPlaying) {
+    if (isPlaying) {
       if (isHoveringEye) setIsHoveringEye(false);
+      if (isHoveringHeadband) setIsHoveringHeadband(false);
       return;
     }
 
-    const inEye = isPointInEyeRegion(e.clientX, e.clientY);
-    setIsHoveringEye(inEye);
+    setIsHoveringEye(isEyeClickable && isPointInEyeRegion(e.clientX, e.clientY));
+    setIsHoveringHeadband(isPointInHeadbandRegion(e.clientX, e.clientY));
   };
 
   const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!isEyeClickable || isPlaying) return;
+    if (isPlaying) return;
 
-    const inEye = isPointInEyeRegion(e.clientX, e.clientY);
-    if (inEye) {
+    if (isPointInHeadbandRegion(e.clientX, e.clientY)) {
+      onHeadbandClick();
+      return;
+    }
+
+    if (isEyeClickable && isPointInEyeRegion(e.clientX, e.clientY)) {
       onEyeClick();
     }
   };
+
+  const isHovering = isHoveringEye || isHoveringHeadband;
 
   const wrapperStyle: React.CSSProperties = isPortraitPhone
     ? {
@@ -318,10 +351,10 @@ export const CinematicCanvas: React.FC<CinematicCanvasProps> = ({
         height: `${effH}px`,
         transformOrigin: 'top left',
         transform: 'rotate(90deg) translateY(-100%)',
-        cursor: isHoveringEye && isEyeClickable && !isPlaying ? 'pointer' : 'default',
+        cursor: isHovering && !isPlaying ? 'pointer' : 'default',
       }
     : {
-        cursor: isHoveringEye && isEyeClickable && !isPlaying ? 'pointer' : 'default',
+        cursor: isHovering && !isPlaying ? 'pointer' : 'default',
       };
 
   return (

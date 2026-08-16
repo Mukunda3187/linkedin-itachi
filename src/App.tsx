@@ -37,6 +37,11 @@ export const App: React.FC = () => {
     setShouldAutoUpload(false);
   }, []);
 
+  // Selected file type isn't supported at all -> show message, auto-reload
+  const handleUnsupportedFile = useCallback((message: string) => {
+    setErrorMessage(message);
+  }, []);
+
   // Step 6 & 7 & 8: User selected images -> AI Analysis & LinkedIn post generation
   const handleFilesSelected = async (files: File[]) => {
     if (!files || files.length === 0) {
@@ -100,6 +105,7 @@ const handleClosePost = useCallback(() => {
           setErrorMessage(null);
           setShouldAutoUpload(true);
         }}
+        onUnsupportedFile={handleUnsupportedFile}
       />
 
       {state === 'post_visible' && generatedPost && (

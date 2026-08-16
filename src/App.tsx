@@ -2,8 +2,8 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { CinematicCanvas } from './components/CinematicCanvas';
 import { FileUploadTrigger } from './components/FileUploadTrigger';
 import { LinkedInPostCard } from './components/LinkedInPostCard';
+import { PdfToPngConverter } from './components/PdfToPngConverter';
 import { analyzeImagesAndGeneratePost } from './services/postService';
-
 type ExperienceState =
   | 'idle' // Normal eyes, waiting for user click
   | 'animating' // Sharingan evolution sequence playing (frames 1-73)
@@ -17,6 +17,12 @@ export const App: React.FC = () => {
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
   const [generatedPost, setGeneratedPost] = useState<string>('');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [pdfPickerSignal, setPdfPickerSignal] = useState<number>(0);
+
+  // Headband clicked -> open the PDF-to-PNG picker
+  const handleHeadbandClick = useCallback(() => {
+    setPdfPickerSignal((prev) => prev + 1);
+  }, []);
 
   // Step 2: User clicks Itachi's eye
  const handleEyeClick = useCallback(() => {
@@ -87,7 +93,11 @@ const handleClosePost = useCallback(() => {
         onAnimationComplete={handleAnimationComplete}
         onEyeClick={handleEyeClick}
        isEyeClickable={state === 'idle'}
+        onHeadbandClick={handleHeadbandClick}
       />
+
+      {/* Invisible hotspot above the headband cut mark opens this */}
+      <PdfToPngConverter triggerSignal={pdfPickerSignal} />
 
       {/* Cinematic Vignette Overlay */}
       <div className="cinematic-vignette pointer-events-none" />

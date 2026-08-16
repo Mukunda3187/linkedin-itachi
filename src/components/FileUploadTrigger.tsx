@@ -9,6 +9,7 @@ interface FileUploadTriggerProps {
   isAnalyzing: boolean;
   errorMessage?: string | null;
   onRetry: () => void;
+  onUnsupportedFile: (message: string) => void;
 }
 
 export const FileUploadTrigger: React.FC<FileUploadTriggerProps> = ({
@@ -19,6 +20,7 @@ export const FileUploadTrigger: React.FC<FileUploadTriggerProps> = ({
   isAnalyzing,
   errorMessage,
   onRetry,
+  onUnsupportedFile,
 }) => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -52,14 +54,27 @@ export const FileUploadTrigger: React.FC<FileUploadTriggerProps> = ({
     }
   }, [shouldTriggerAutoUpload, onUploadHandled]);
 
+const ALLOWED_TYPES = [
+    'image/png',
+    'image/jpeg',
+    'image/jpg',
+    'image/webp',
+    'application/pdf',
+    'application/msword',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  ];
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
-      const selected = Array.from(e.target.files).filter((file) =>
-        ['image/png', 'image/jpeg', 'image/jpg', 'image/webp'].includes(file.type)
-      );
-      if (selected.length > 0) {
-        onFilesSelected(selected);
+      const allFiles = Array.from(e.target.files);
+      const supported = allFiles.filter((file) => ALLOWED_TYPES.includes(file.type));
+
+      if (supported.length === 0) {
+        onUnsupportedFile('That file type is not supported. Please upload an image, PDF, or Word document.');
+        return;
       }
+
+      onFilesSelected(supported);
     }
   };
 
@@ -70,7 +85,7 @@ export const FileUploadTrigger: React.FC<FileUploadTriggerProps> = ({
         ref={fileInputRef}
         type="file"
         multiple
-        accept="image/png,image/jpeg,image/jpg,image/webp"
+        accept="image/png,image/jpeg,image/jpg,image/webp,application/pdf,.pdf,.doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
         onChange={handleFileChange}
         className="hidden"
         id="itachi-file-input"

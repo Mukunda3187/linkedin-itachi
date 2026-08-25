@@ -1,3 +1,5 @@
+import { convertPdfToPngs, downloadPdfPageImages } from './pdfToImages';
+
 export interface ImageAnalysisResult {
   postText: string;
 }
@@ -58,24 +60,48 @@ function compressImage(file: File): Promise<string> {
   });
 }
 
-export async function analyzeImagesAndGeneratePost(files: File[]): Promise<ImageAnalysisResult> {
+interface ImagePayload {
+  mimeType: string;
+  data: string;
+}
 
-  const images = await Promise.all(
-    files.map(async (file) => {
-      try {
-        return {
-          mimeType: 'image/jpeg',
-          data: await compressImage(file),
-        };
-      } catch {
-        // Fall back to the original file if compression fails for any reason
-        return {
-          mimeType: file.type || 'image/jpeg',
-          data: await fileToBase64(file),
-        };
+async function buildImagePayloads(files: File[]): Promise<ImagePayload[]> {
+  const images: ImagePayload[] = [];
+
+  for (const file of files) {
+    if (file.type === 'application/pdf') {
+      // Render every page of the PDF to its own PNG, download them all,
+      // and send every page to the AI (not just the first one).
+      const pages = await convertPdfToPngs(file);
+      downloadPdfPageImages(pages);
+
+      for (const page of pages) {
+        images.push({
+          mimeType: 'image/png',
+          data: page.dataUrl.split(',')[1],
+        });
       }
-    })
-  );
+      continue;
+    }
+
+    try {
+      images.push({
+        mimeType: 'image/jpeg',
+        data: await compressImage(file),
+      });
+    } catch {
+      images.push({
+        mimeType: file.type || 'image/jpeg',
+        data: await fileToBase64(file),
+      });
+    }
+  }
+
+  return images;
+}
+
+export async function analyzeImagesAndGeneratePost(files: File[]): Promise<ImageAnalysisResult> {
+  const images = await buildImagePayloads(files);
 
   const response = await fetch(`${API_BASE}/api/generate-post`, {
     method: 'POST',

@@ -69,11 +69,11 @@ async function buildImagePayloads(files: File[]): Promise<ImagePayload[]> {
   const images: ImagePayload[] = [];
 
   for (const file of files) {
-    if (file.type === 'application/pdf') {
-      // Render every page of the PDF to its own PNG, download them all,
-      // and send every page to the AI (not just the first one).
+       if (file.type === 'application/pdf') {
+      // Render every page of the PDF to its own PNG, zip them into one
+      // download, and send every page to the AI (not just the first one).
       const pages = await convertPdfToPngs(file);
-      downloadPdfPageImages(pages);
+      await downloadPdfPageImages(pages, file.name.replace(/\.pdf$/i, ''));
 
       for (const page of pages) {
         images.push({

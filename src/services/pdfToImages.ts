@@ -1,5 +1,6 @@
 import * as pdfjsLib from 'pdfjs-dist';
 import pdfWorkerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
+import JSZip from 'jszip';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
 
@@ -48,18 +49,25 @@ export async function convertPdfToPngs(file: File): Promise<PdfPageImage[]> {
   return pages;
 }
 
-// Downloads each rendered page as a separate PNG file to the user's device.
-export function downloadPdfPageImages(pages: PdfPageImage[]): void {
-  pages.forEach((page, index) => {
-    setTimeout(() => {
-      const url = URL.createObjectURL(page.blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = page.fileName;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      setTimeout(() => URL.revokeObjectURL(url), 2000);
-    }, index * 350);
+// Bundles every rendered page into a single ZIP and triggers ONE download.
+// (Mobile browsers block/drop multiple separate auto-downloads, so a single
+// zip is the reliable way to hand back multi-page PDF output on any device.)
+export async function downloadPdfPageImages(
+  pages: PdfPageImage[],
+  zipBaseName: string
+): Promise<void> {
+  const zip = new JSZip();
+  pages.forEach((page) => {
+    zip.file(page.fileName, page.blob);
   });
+
+  const zipBlob = await zip.generateAsync({ type: 'blob' });
+  const url = URL.createObjectURL(zipBlob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `${zipBaseName}-pages.zip`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  setTimeout(() => URL.revokeObjectURL(url), 2000);
 }
